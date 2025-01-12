@@ -1,0 +1,3 @@
+//(s0-s11): local variables
+//(t0-t6): global
+//(t0-t2): indexes of arrays

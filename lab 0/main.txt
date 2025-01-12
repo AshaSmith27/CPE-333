@@ -4,3 +4,7 @@
 //t0: index of array A
 //t1: index of array B
 //t2: index of array C
+.data
+A:	.words
+B:	.words
+C:	.words

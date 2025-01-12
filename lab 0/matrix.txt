@@ -1,2 +1,27 @@
-matrix: 
+//retrieves and returns the value at the given index
+//assumes a0 = i (rows), a1 = j (columns), a2 = address of lut, a3 = size of array, returns output in a0
+matrix:
+save:	addi	sp,sp,-4
+		sw		s0,0(sp)
+		
+init:	mv		s0,x0	
+		slli	a0,a0,2		//shift i values to word size
+		slli	a3,a3,2		//shift from byte-sized to wordsized array
+		
+column:	beqz 	a1,row		//branch when number of remaining cols = 0
+		add		s0,s0,a3	//shift columns
+		addi	a1,a1,-1	//increment loop
+		j column
+		
+row:	srli	a0,a0,2			//shift from wordsized to bytesized 
+		add		s0,s0,a0		//add row to lut index
+		
+admin:	add		a2,a2,s0		//add the index value to the lut address
+		lw		a0,0(a2)		//fetch the value from lut and put into return address	
+		
+restore:mv		a1,x0
+		mv		a2,x0
+		mv		a3,x0
+		lw		s0,0(sp)
+		addi	sp,sp,4
 		

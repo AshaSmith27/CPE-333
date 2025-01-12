@@ -1,0 +1,30 @@
+#Func Multi <a0,a1>
+#Return result in a0 
+
+#Func (a0, a1):
+#int x=0, sum=0;
+#for (x<=a0):
+#	sum = sum + a1
+#	x++
+#return sum //in a0
+#------------------------------------------------------------------------------------
+#Inputs: a0 = index 0, a1 = index 1
+init:	addi	sp,	sp,	-12	#make space (stack 4)
+	sw	ra,	8(sp)		#save ra (return address)
+	mv	s0,	0		#intialize x (iterator)
+	mv	s1,	0		#initialize sum
+	sw	s0,	4(sp)		#save x on stack
+	sw	s1,	0(sp)		#save sum on stack
+
+
+loop:	bgt	s0,	a0, done	#if x>a0: start return sequence
+	add	s1,	s1,	a1	#add sum=sum+a1
+	sw	s1,	0(sp)		#store new sum
+	addi	s0,	s0,	1	#increment x++
+	j	loop			#repeat!
+
+
+done:	lw	a0,	0(sp)		#return sum to a0
+	lw	ra,	8(sp)		#restore return address	
+	addi 	sp,	sp,	12	#restore stack pointer
+	ret				#finish

@@ -1,3 +1,6 @@
 //(s0-s11): local variables
 //(t0-t6): global
 //(t0-t2): indexes of arrays
+//t0: index of array A
+//t1: index of array B
+//t2: index of array C

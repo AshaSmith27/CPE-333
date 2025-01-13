@@ -21,7 +21,12 @@ init:				la	s1,A	#load array A
 					mv	s4,x0	# j
 					mv	s5,x0	# k
 					
-row_loop2:			addi	sp,sp,-4	#saves ra to stack
+row_loop2:			
+#algo goes here
+#result[i][j] += m1[i][k] * m2[k][j]
+#
+#---------------------------------------------------------------------------------------
+					addi	sp,sp,-4	#saves ra to stack
 					sw		ra,0(sp)
 
 					mv		a2,a0		#moves the size
@@ -39,8 +44,7 @@ row_loop2:			addi	sp,sp,-4	#saves ra to stack
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
-					
-					
+#----------------------------------------------------------------------------------------
 					j	row_loop2_admin
 col_loop:			j	col_loop_admin					
 row_loop1:			j	row_loop1_admin

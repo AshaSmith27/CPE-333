@@ -1,17 +1,15 @@
-#s0-s11): local variables
+#(s0-s11): local variables must add to stack
 #(t0-t6): global
-#(t0-t2): indexes of arrays
-#t0: index of array A
-#t1: index of array B
-#t2: index of array C
 .data
-A:	.words
+A:	.words 
 B:	.words
-C:	.words 0,
+C:	.words 
 
 .text
 #----------------------------------------------------------------------------------------
-#assumes a0 = size of array
+#Matrix multiplication function
+#a0 = arrazy size
+#========================================================================================
 matrixMult:
 save:	
 init:				la	s1,A	#load array A
@@ -64,6 +62,8 @@ row_loop1_admin:	addi	s3,s3,1
 
 restore:
 return:
+#===========================================================================================
+
 #-------------------------------------------------------------------------------------
 #Subroutine 1
 #retrieves and returns the index

@@ -23,7 +23,7 @@ init:				la	s1,A	#load array A
 row_loop2:			
 #algo goes here
 #result[i][j] += m1[i][k] * m2[k][j]
-#
+#not done
 #---------------------------------------------------------------------------------------
 					addi	sp,sp,-4	#saves ra to stack
 					sw		ra,0(sp)

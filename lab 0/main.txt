@@ -21,7 +21,20 @@ init:				la	s1,A	#load array A
 					mv	s4,x0	# j
 					mv	s5,x0	# k
 					
-row_loop2:			
+row_loop2:			addi	sp,sp,-4
+					sw		ra,0(sp)
+					
+					mv		a0,s3		#i to arg1
+					mv		a1,s4		#j to arg2
+					mv		a2,s
+					
+					call	Matrix		#
+					sw		s0,0(a0)	#stores result to matrix index
+					
+					lw		ra,0(sp)
+					addi	sp,sp,4
+					
+					
 					j	row_loop2_admin
 col_loop:			j	col_loop_admin					
 row_loop1:			j	row_loop1_admin
@@ -43,8 +56,8 @@ restore:
 return:
 #-------------------------------------------------------------------------------------
 #Subroutine 1
-#retrieves and returns the value at the given index
-#assumes a0 = i (rows), a1 = j (columns), a2 = address of lut, a3 = size of array, returns output in a0, index in a1
+#retrieves and returns the index
+#assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
 #-------------------------------------------------------------------------------------
 Matrix:
 save:	addi	sp,sp,-4
@@ -62,8 +75,7 @@ column:	beqz 	a1,row			#branch when number of remaining cols = 0
 row:	srli	a0,a0,2			#shift from wordsized to bytesized 
 		add		s0,s0,a0		#add row to lut index
 		
-admin:	add		a2,a2,s0		#add the index value to the lut address
-		lw		a0,0(a2)		#fetch the value from lut and put into return address	
+admin:	add		a0,a2,s0		#add the index value to the lut address
 		
 restore:mv		a1,x0
 		mv		a2,x0

@@ -1,10 +1,88 @@
-//(s0-s11): local variables
-//(t0-t6): global
-//(t0-t2): indexes of arrays
-//t0: index of array A
-//t1: index of array B
-//t2: index of array C
+#s0-s11): local variables
+#(t0-t6): global
+#(t0-t2): indexes of arrays
+#t0: index of array A
+#t1: index of array B
+#t2: index of array C
 .data
 A:	.words
 B:	.words
-C:	.words
+C:	.words 0,
+
+.text
+matrixMult:
+save:	
+init:	la	a1,A	//load array A
+		la	a2,B	//load array B
+		la	s0,C	//load output array 
+
+
+#-------------------------------------------------------------------------------------
+#Subroutine 1
+#retrieves and returns the value at the given index
+#assumes a0 = i (rows), a1 = j (columns), a2 = address of lut, a3 = size of array, returns output in a0
+#-------------------------------------------------------------------------------------
+Matrix:
+save:	addi	sp,sp,-4
+		sw		s0,0(sp)
+		
+init:	mv		s0,x0	
+		slli	a0,a0,2			//shift i values to word size
+		slli	a3,a3,2			//shift from byte-sized to wordsized array
+		
+column:	beqz 	a1,row			//branch when number of remaining cols = 0
+		add		s0,s0,a3		//shift columns
+		addi	a1,a1,-1		//increment loop
+		j column
+		
+row:	srli	a0,a0,2			//shift from wordsized to bytesized 
+		add		s0,s0,a0		//add row to lut index
+		
+admin:	add		a2,a2,s0		//add the index value to the lut address
+		lw		a0,0(a2)		//fetch the value from lut and put into return address	
+		
+restore:mv		a1,x0
+		mv		a2,x0
+		mv		a3,x0
+		lw		s0,0(sp)
+		addi	sp,sp,4
+		ret
+#-------------------------------------------------------------------------------------
+
+#Subroutine 2
+#Func Multi <a0,a1>
+#Return result in a0 
+
+#Func (a0, a1):
+#int x=0, sum=0;
+#for (x<=a0):
+#	sum = sum + a1
+#	x++
+#return sum //in a0
+#-------------------------------------------------------------------------------------
+#Inputs: a0 = index 0, a1 = index 1
+
+Multi:
+init:	
+	addi	sp,	sp,	-12	#make space (stack 4)
+	sw	ra,	8(sp)		#save ra (return address)
+	mv	s0,	0			#intialize x (iterator)
+	mv	s1,	0			#initialize sum
+	sw	s0,	4(sp)		#save x on stack
+	sw	s1,	0(sp)		#save sum on stack
+
+loop:	
+	bgt	s0,	a0, done	#if x>a0: start return sequence
+	add	s1,	s1,	a1		#add sum=sum+a1
+	sw	s1,	0(sp)		#store new sum
+	addi	s0,	s0,	1	#increment x++
+	j	loop			#repeat!
+
+done:
+	mv		a1,x0
+	mv		a2,x0	
+	lw	a0,	0(sp)		#return sum to a0
+	lw	ra,	8(sp)		#restore return address	
+	addi 	sp,	sp,	12	#restore stack pointer
+	ret					#finish
+#-----------------------------------------------------------------------------------

@@ -90,16 +90,16 @@ col_loop:			j	col_loop_admin
 row_loop1:			j	row_loop1_admin
 
 					
-row_loop2_admin:	addi	s5,s5,1
-					blt		s5,a0,row_loop2
+row_loop2_admin:	addi	s5,s5,1				#k++
+					blt		s5,a0,row_loop2		#k < size
 					mv		s5,x0
 					
-col_loop_admin:		addi	s4,s4,1
-					blt		s4,a0,col_loop
+col_loop_admin:		addi	s4,s4,1				#j++
+					blt		s4,a0,col_loop		#j < size
 					mv		s4,x0
 					
-row_loop1_admin:	addi	s3,s3,1
-					blt 	s3,a0,row_loop1	
+row_loop1_admin:	addi	s3,s3,1				#i++
+					blt 	s3,a0,row_loop1		#i < size
 					mv		s3,x0
 
 restore:

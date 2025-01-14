@@ -1,9 +1,9 @@
-#(s0-s11): local variables must add to stack
-#(t0-t6): global
+# (s0-s11): local variables must add to stack
+# (t0-t6): global
 .data
-A:	.words 
-B:	.words
-C:	.words 
+A:      .words 
+B:      .words
+C:      .words 
 
 .text
 main:				mv		a0,t2
@@ -25,9 +25,9 @@ done1:
 
 
 #----------------------------------------------------------------------------------------
-#Matrix multiplication function
-#a0 = arrazy size
-#more testing
+# Matrix multiplication function
+# a0 = array size
+# more testing
 #========================================================================================
 matrixMult:
 save1:				addi	sp,sp,-24
@@ -44,132 +44,102 @@ init1:				la	s1,A	#load array A
 					mv	s3,x0	# i
 					mv	s4,x0	# j
 					mv	s5,x0	# k
-					
-row_loop2:			
-#algo goes here
-#result[i][j] += m1[i][k] * m2[k][j]
-#fetch m1[i][k] and m2[k][j] 
-#fetch result[i][j] into, mult m1 and m2, add to result and then store
-#t0:  m1[i][k] t1: m2[k][j] t2: result[i][j]
+
+row_loop2:
+# Algo goes here
+# result[i][j] += m1[i][k] * m2[k][j]
+# Fetch m1[i][k] and m2[k][j]
+# Fetch result[i][j] into, mult m1 and m2, add to result and then store
+# t0:  m1[i][k], t1: m2[k][j], t2: result[i][j]
 #---------------------------------------------------------------------------------------
-m1_fet:									#puts matrix 1 value in t1
-					mv		a2,a0		#moves the size
-					
-					mv		a0,s3		#i to arg0
-					mv		a1,s5		#k to arg1
-				
-					addi	sp,sp,-4	#saves ra to stack
-					sw		ra,0(sp)
-					
-					call	Matrix		#gets the Matrix
-					
-					lw		ra,0(sp)	#restores ra
-					addi	sp,sp,4
+m1_fet:             mv      a2, a0       # moves the size
+                    mv      a0, s3       # i to arg0
+                    mv      a1, s5       # k to arg1
+                    addi    sp, sp, -4   # saves ra to stack
+                    sw      ra, 0(sp)
+                    call    Matrix       # gets the Matrix
+                    lw      ra, 0(sp)    # restores ra
+                    addi    sp, sp, 4
+                    add     a0, a0, s1   # adds index to appropriate LUT
+                    lw      t0, 0(a0)    # retrieves value at matrix A index
+                    
+m2_fet:             addi    sp, sp, -4   # saves ra to stack
+                    sw      ra, 0(sp)
+                    mv      a2, a0       # moves the size
+                    mv      a1, s4       # j to arg1
+                    mv      a0, s5       # k to arg0
+                    call    Matrix       # gets the Matrix
+                    add     a0, a0, s2   # adds index to appropriate LUT
+                    lw      t1, 0(a0)    # retrieves value at matrix B index
+                    lw      ra, 0(sp)    # restores ra
+                    addi    sp, sp, 4
 
-					add		a0,a0,s1	#adds index to appropriate lut
-					lw		t0,0(a0)	#retrieves value at matrix index
-					
-					lw		ra,0(sp)	#restores ra
-					addi	sp,sp,4
-					
-m2_fet:				
-					addi	sp,sp,-4	#saves ra to stack
-					sw		ra,0(sp)
+m1_m2_mult:         addi    sp, sp, -4   # saves ra to stack
+                    sw      ra, 0(sp)
+                    mv      a0, t0       # move m1 into a0
+                    mv      a1, t1       # move m2 into a1
+                    call    Multi        # multiplies m1 * m2
+                    mv      t0, a0       # move result to t0
+                    lw      ra, 0(sp)    # restores ra
+                    addi    sp, sp, 4
 
-					mv		a2,a0		#moves the size
-					
-					mv		a1,s4		#j to arg1
-					mv		a0,s5		#k to arg0
-				
-					call	Matrix		#gets the Matrix
-					
-					add		a0,a0,s2	#adds index to appropriate lut
-					lw		t1,0(a0)	#retrieves value at matrix index
-					
-					lw		ra,0(sp)	#restores ra
-					addi	sp,sp,4
-m1_m2_mult:							#m1 puts product into t0
-					addi	sp,sp,-4	#saves ra to stack
-					sw	ra,0(sp)
-					
-					mv	a0,t0		#move m1 into a0
-					mv	a1,t1		#move m2 into a1
-					call	Multi		#multiplies m1 * m2
-					mv	t0, a0		#move result to t0
-					
-					lw	ra,0(sp)	#restores ra
-					addi	sp,sp,4
+result_fet:         addi    sp, sp, -4   # saves ra to stack
+                    sw      ra, 0(sp)
+                    mv      a2, a0       # moves the size
+                    mv      a0, s3       # i to arg0
+                    mv      a1, s4       # j to arg1
+                    call    Matrix       # gets the Matrix
+                    add     a0, a0, s1   # adds index to appropriate LUT
+                    lw      t1, 0(a0)    # retrieves value at matrix index
+                    lw      ra, 0(sp)    # restores ra
+                    addi    sp, sp, 4
 
-result_fet:			#fetches array data to t1
-					addi	sp,sp,-4	#saves ra to stack
-					sw		ra,0(sp)
+result_add:         add     t0, t0, t1   # puts sum into t0
 
-					mv		a2,a0		#moves the size
-					
-					mv		a0,s3		#i to arg1
-					mv		a1,s4		#j to arg2
-					
-					call	Matrix		#gets the Matrix
-					
-					add		a0,a0,s1	#adds index to appropriate lut
-					lw		t1,0(a0)	#retrieves value at matrix index
-					
-					lw		ra,0(sp)	#restores ra
-					addi	sp,sp,4
-result_add:			
-					add		t0,t0,t1	#puts sum into t0
-result_store:		
-					sw		t0,0(a0)	#stores t0 sum
-					j	row_loop2_admin
-					
-col_loop:			#fetches array data to t1
-					addi	sp,sp,-4	#saves ra to stack
-					sw		ra,0(sp)
+result_store:       sw      t0, 0(a0)    # stores t0 sum
+                    j       row_loop2_admin
 
-					mv		a2,a0		#moves the size
-					
-					mv		a0,s3		#i to arg1
-					mv		a1,s4		#j to arg2
-					
-					call	Matrix		#gets the Matrix
-					
-					add		a0,a0,s1	#adds index to appropriate lut
-					sw		x0,0(a0)	#retrieves value at matrix index
-					
-					lw		ra,0(sp)	#restores ra
-					addi	sp,sp,4
-					j	col_loop_admin	
-					
-row_loop1:			j	row_loop1_admin
+col_loop:           addi    sp, sp, -4   # saves ra to stack
+                    sw      ra, 0(sp)
+                    mv      a2, a0       # moves the size
+                    mv      a0, s3       # i to arg0
+                    mv      a1, s4       # j to arg1
+                    call    Matrix       # gets the Matrix
+                    add     a0, a0, s1   # adds index to appropriate LUT
+                    sw      x0, 0(a0)    # retrieves value at matrix index
+                    lw      ra, 0(sp)    # restores ra
+                    addi    sp, sp, 4
+                    j       col_loop_admin
 
-					
-row_loop2_admin:	addi	s5,s5,1				#k++
-					blt		s5,a0,row_loop2		#k < size
-					mv		s5,x0
-					
-col_loop_admin:		addi	s4,s4,1				#j++
-					blt		s4,a0,col_loop		#j < size
-					mv		s4,x0
-					
-row_loop1_admin:	addi	s3,s3,1				#i++
-					blt 	s3,a0,row_loop1		#i < size
-					mv		s3,x0
+row_loop1:          j       row_loop1_admin
 
-restore:			lw	s5,20(sp)	# k
-					lw	s4,16(sp)	# j
-					lw	s3,12(sp)	# i
-					lw	s2,8(sp)	#load output array
-					lw	s1,4(sp)	#load array B
-					lw	s0,0(sp)	#load array A
-					addi	sp,sp,24
-return:				ret
+row_loop2_admin:    addi    s5, s5, 1    	# k++
+                    blt     s5, a0, row_loop2 # k < size
+                    mv      s5, x0
+
+col_loop_admin:     addi    s4, s4, 1    # j++
+                    blt     s4, a0, col_loop # j < size
+                    mv      s4, x0
+
+row_loop1_admin:    addi    s3, s3, 1    # i++
+                    blt     s3, a0, row_loop1 # i < size
+                    mv      s3, x0
+
+restore:            lw      s5, 20(sp)   # k
+                    lw      s4, 16(sp)   # j
+                    lw      s3, 12(sp)   # i
+                    lw      s2, 8(sp)    # load output array
+                    lw      s1, 4(sp)    # load array B
+                    lw      s0, 0(sp)    # load array A
+                    addi    sp, sp, 24
+
+return:             ret
+
 #===========================================================================================
-
-#-------------------------------------------------------------------------------------
-#Subroutine 1
-#retrieves and returns the index
-#assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
-#-------------------------------------------------------------------------------------
+# Subroutine 1: Matrix
+# Retrieves and returns the index
+# Assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
+#-------------------------------------------------------------------------------------------
 Matrix:
 save2:	addi	sp,sp,-4
 		sw		s0,0(sp)
@@ -193,22 +163,12 @@ restore2:mv		a1,x0
 		lw		s0,0(sp)
 		addi	sp,sp,4
 		ret
-		
-#-------------------------------------------------------------------------------------
-
-#Subroutine 2
-#Func Multi <a0,a1>
-#Return result in a0 
-
-#Func (a0, a1):
-#int x=0, sum=0;
-#for (x<=a0):
-#	sum = sum + a1
-#	x++
-#return sum //in a0
-#-------------------------------------------------------------------------------------
-#Inputs: a0 = index 0, a1 = index 1
-
+					
+#===========================================================================================
+# Subroutine 2: Multi
+# Multiplies two numbers and returns the result in a0
+# Inputs: a0 = multiplicand, a1 = multiplier
+#-------------------------------------------------------------------------------------------
 Multi:
 init3:	
 	addi	sp,	sp,	-12	#make space (stack 4)
@@ -232,4 +192,3 @@ done3:
 	lw	ra,	8(sp)		#restore return address	
 	addi 	sp,	sp,	12	#restore stack pointer
 	ret					#finish
-#-----------------------------------------------------------------------------------

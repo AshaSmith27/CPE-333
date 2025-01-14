@@ -49,7 +49,7 @@ m1_fet:									#puts matrix 1 value in t1
 					addi	sp,sp,4
 
 					add		a0,a0,s1	#adds index to appropriate lut
-					lw		t0,0(a0)	#retrieves value at matrix index
+					lw		t0,0(a0)	#retrieves value at matrix A index
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
@@ -66,7 +66,7 @@ m2_fet:
 					call	Matrix		#gets the Matrix
 					
 					add		a0,a0,s2	#adds index to appropriate lut
-					lw		t1,0(a0)	#retrieves value at matrix index
+					lw		t1,0(a0)	#retrieves value at matrix B index
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
@@ -193,7 +193,7 @@ restore:mv		a1,x0
 
 Multi:
 init:	
-	addi	sp,	sp,	-12	#make space (stack 4)
+	addi	sp,	sp,	-12	#make space (stack 3)
 	sw	ra,	8(sp)		#save ra (return address)
 	mv	s0,	0			#intialize x (iterator)
 	mv	s1,	0			#initialize sum

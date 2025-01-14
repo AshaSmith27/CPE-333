@@ -158,6 +158,10 @@ return:
 # Assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
 #-------------------------------------------------------------------------------------------
 Matrix:
+init:	li	a0,0
+	li	a1,2
+	li	a2,4
+	
 save2:		
 	addi	sp,sp,-4
 	sw	s0,0(sp)
@@ -165,27 +169,24 @@ save2:
 init2:		
 	mv	s0,x0	
 	slli	a0,a0,2			#shift i values to word size
-	slli	a3,a3,2			#shift from byte-sized to wordsized array
+	slli	a2,a2,2			#shift from byte-sized to wordsized array
 		
 column:		
-	beqz 	a1,row			#branch when number of remaining cols = 0
-	add		s0,s0,a3		#shift columns
+	beqz	a1,row			#branch when number of remaining cols = 0
+	add	s0,s0,a2		#shift columns
 	addi	a1,a1,-1		#increment loop
 	j column
 		
 row:		
-	add	s0,s0,a0		#add row to lut index
-		
-admin:		
-	mv	a0,s0			#add the index value to the lut address
-		
+	add	a0,s0,a0		#add row to lut index
+				
 restore2:	
 	mv	a1,x0
 	mv	a2,x0
 	lw	s0,0(sp)
 	addi	sp,sp,4
-	ret
-		
+	
+
 #-------------------------------------------------------------------------------------
 
 #Subroutine 2
@@ -224,3 +225,6 @@ done3:
 	lw	ra,	8(sp)		#restore return address	
 	addi 	sp,	sp,	12	#restore stack pointer
 	ret					#finish
+	
+	
+	

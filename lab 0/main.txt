@@ -63,8 +63,18 @@ m2_fet:
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
-m1_m2_mult:			#puts product into t0
+m1_m2_mult:							#m1 puts product into t0
+					addi	sp,sp,-4	#saves ra to stack
+					sw	ra,0(sp)
 					
+					mv	a0,t0		#move m1 into a0
+					mv	a1,t1		#move m2 into a1
+					call	Multi		#multiplies m1 * m2
+					mv	t0, a0		#move result to t0
+					
+					lw	ra,0(sp)	#restores ra
+					addi	sp,sp,4
+
 result_fet:			#fetches array data to t1
 					addi	sp,sp,-4	#saves ra to stack
 					sw		ra,0(sp)

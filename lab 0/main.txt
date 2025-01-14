@@ -24,7 +24,7 @@ row_loop2:
 #algo goes here
 #result[i][j] += m1[i][k] * m2[k][j]
 #fetch m1[i][k] and m2[k][j] 
-#fetch result[i][j], mult m1 and m2, add to result and then store
+#fetch result[i][j] into, mult m1 and m2, add to result and then store
 #not done
 #---------------------------------------------------------------------------------------
 m1:										#Puts matrix 1 value in t1

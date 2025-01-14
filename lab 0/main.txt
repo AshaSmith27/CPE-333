@@ -25,7 +25,7 @@ row_loop2:
 #result[i][j] += m1[i][k] * m2[k][j]
 #fetch m1[i][k] and m2[k][j] 
 #fetch result[i][j] into, mult m1 and m2, add to result and then store
-#not done
+#t0:  m1[i][k] t1: m2[k][j] t2: result[i][j]
 #---------------------------------------------------------------------------------------
 m1_fet:									#puts matrix 1 value in t1
 					mv		a2,a0		#moves the size
@@ -56,13 +56,15 @@ m2_fet:
 					mv		a1,s4		#j to arg1
 					mv		a0,s5		#k to arg0
 				
-					
 					call	Matrix		#gets the Matrix
+					
 					add		a0,a0,s2	#adds index to appropriate lut
 					lw		t1,0(a0)	#retrieves value at matrix index
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
+m1_m2_mult:			#puts product into t0
+					
 result_fet:
 					addi	sp,sp,-4	#saves ra to stack
 					sw		ra,0(sp)
@@ -79,7 +81,9 @@ result_fet:
 					
 					lw		ra,0(sp)	#restores ra
 					addi	sp,sp,4
-
+result_add:
+					
+result_store:
 
 #|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 

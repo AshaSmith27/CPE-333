@@ -23,6 +23,8 @@ init:				la	s1,A	#load array A
 row_loop2:			
 #algo goes here
 #result[i][j] += m1[i][k] * m2[k][j]
+#fetch m1[i][k] and m2[k][j] 
+#fetch result[i][j], mult m1 and m2, add to result and then store
 #not done
 #---------------------------------------------------------------------------------------
 m1:										#Puts matrix 1 value in t1
@@ -64,7 +66,7 @@ m1:										#Puts matrix 1 value in t1
 
 
 
-#===========================================================================================
+#|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 					addi	sp,sp,-4	#saves ra to stack
 					sw		ra,0(sp)

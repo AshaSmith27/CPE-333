@@ -12,7 +12,14 @@ C:	.words
 #more testing
 #========================================================================================
 matrixMult:
-save:	
+save:				addi	sp,sp,-24
+					sw	s0,0(sp)	#load array A
+					sw	s1,4(sp)	#load array B
+					sw	s2,8(sp)	#load output array 
+					sw	s3,12(sp)	# i
+					sw	s4,16(sp)	# j
+					sw	s5,20(sp)	# k
+
 init:				la	s1,A	#load array A
 					la	s2,B	#load array B
 					la	s0,C	#load output array 
@@ -130,8 +137,14 @@ row_loop1_admin:	addi	s3,s3,1				#i++
 					blt 	s3,a0,row_loop1		#i < size
 					mv		s3,x0
 
-restore:
-return:
+restore:			lw	s5,20(sp)	# k
+					lw	s4,16(sp)	# j
+					lw	s3,12(sp)	# i
+					lw	s2,8(sp)	#load output array
+					lw	s1,4(sp)	#load array B
+					lw	s0,0(sp)	#load array A
+					addi	sp,sp,24
+return:				ret
 #===========================================================================================
 
 #-------------------------------------------------------------------------------------

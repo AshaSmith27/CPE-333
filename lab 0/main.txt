@@ -1,9 +1,9 @@
 # (s0-s11): local variables must add to stack
 # (t0-t6): global
 .data
-A:      .words	0,3,2,0,3,1,0,3,2
-B:      .words	1,1,0,3,1,2,0,0,0
-C:      .words 
+A:      .word	0,3,2,0,3,1,0,3,2
+B:      .word	1,1,0,3,1,2,0,0,0
+C:      .word 
 
 .text
 main:			

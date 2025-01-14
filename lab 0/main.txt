@@ -6,21 +6,39 @@ B:	.words
 C:	.words 
 
 .text
+main:				mv		a0,t2
+					call 	matrixMult
+					la		t0,C
+size:				
+					mv		a0,t2
+					mv		a1,t2
+					
+					call	Multi
+					
+					
+loop1:				lw		t1,0(t0)
+					addi	t0,t0,1
+					blt		t0,a0,loop1
+					
+done1:				
+					
+
+
 #----------------------------------------------------------------------------------------
 #Matrix multiplication function
 #a0 = arrazy size
 #more testing
 #========================================================================================
 matrixMult:
-save:				addi	sp,sp,-24
-					sw	s0,0(sp)	#load array A
-					sw	s1,4(sp)	#load array B
-					sw	s2,8(sp)	#load output array 
-					sw	s3,12(sp)	# i
-					sw	s4,16(sp)	# j
-					sw	s5,20(sp)	# k
-
-init:				la	s1,A	#load array A
+save1:				addi	sp,sp,-24
+					sw	s0,0(sp)
+					sw	s1,4(sp)
+					sw	s2,8(sp)
+					sw	s3,12(sp)
+					sw	s4,16(sp)
+					sw	s5,20(sp)
+					
+init1:				la	s1,A	#load array A
 					la	s2,B	#load array B
 					la	s0,C	#load output array 
 					mv	s3,x0	# i
@@ -153,10 +171,10 @@ return:				ret
 #assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
 #-------------------------------------------------------------------------------------
 Matrix:
-save:	addi	sp,sp,-4
+save2:	addi	sp,sp,-4
 		sw		s0,0(sp)
 		
-init:	mv		s0,x0	
+init2:	mv		s0,x0	
 		slli	a0,a0,2			#shift i values to word size
 		slli	a3,a3,2			#shift from byte-sized to wordsized array
 		
@@ -170,7 +188,7 @@ row:	srli	a0,a0,2			#shift from wordsized to bytesized
 		
 admin:	mv		a0,s0			#add the index value to the lut address
 		
-restore:mv		a1,x0
+restore2:mv		a1,x0
 		mv		a2,x0
 		lw		s0,0(sp)
 		addi	sp,sp,4
@@ -192,22 +210,22 @@ restore:mv		a1,x0
 #Inputs: a0 = index 0, a1 = index 1
 
 Multi:
-init:	
+init3:	
 	addi	sp,	sp,	-12	#make space (stack 4)
 	sw	ra,	8(sp)		#save ra (return address)
-	mv	s0,	0			#intialize x (iterator)
-	mv	s1,	0			#initialize sum
+	mv	s0,	x0			#intialize x (iterator)
+	mv	s1,	x0			#initialize sum
 	sw	s0,	4(sp)		#save x on stack
 	sw	s1,	0(sp)		#save sum on stack
 
-loop:	
-	bgt	s0,	a0, done	#if x>a0: start return sequence
+loop3:	
+	bgt	s0,	a0, done3	#if x>a0: start return sequence
 	add	s1,	s1,	a1		#add sum=sum+a1
 	sw	s1,	0(sp)		#store new sum
 	addi	s0,	s0,	1	#increment x++
-	j	loop			#repeat!
+	j	loop3			#repeat!
 
-done:
+done3:
 	mv		a1,x0
 	mv		a2,x0	
 	lw	a0,	0(sp)		#return sum to a0

@@ -153,16 +153,16 @@ save2:
 		
 init2:		
 	mv	s0,x0	
-	slli	a0,a0,2			#shift i values to word size
+	slli	a1,a1,2			#shift i values to word size
 	slli	s1,a2,2			#shift from byte-sized to wordsized array	
 column:		
-	beqz	a1,row			#branch when number of remaining cols = 0
+	beqz	a0,row			#branch when number of remaining cols = 0
 	add	s0,s0,s1			#shift columns
-	addi	a1,a1,-1		#increment loop
+	addi	a0,a0,-1		#increment loop
 	j column
 		
 row:		
-	add	a0,s0,a0		#add row to lut index
+	add	a0,s0,a1		#add row to lut index
 				
 restore2:	
 	mv	a1,x0
@@ -170,6 +170,7 @@ restore2:
 	lw	s0,0(sp)
 	addi	sp,sp,8
 	ret
+
 
 #-------------------------------------------------------------------------------------
 

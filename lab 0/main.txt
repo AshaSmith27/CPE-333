@@ -3,7 +3,7 @@
 .data
 A:      .word	0,3,2,0,3,1,0,3,2
 B:      .word	1,1,0,3,1,2,0,0,0
-C:      .word 
+C:      .word 	0,0,0,0,0,0,0,0,0
 
 .text
 main:
@@ -22,7 +22,7 @@ done1:
 # more testing
 #========================================================================================
 matrixMult:
-save1:			
+init:	
 	addi	sp,sp,-24
 	sw	s0,0(sp)
 	sw	s1,4(sp)
@@ -31,7 +31,8 @@ save1:
 	sw	s4,16(sp)
 	sw	s5,20(sp)
 					
-init1:				
+init1:		
+	mv      a2, a0       # moves the size			
 	la	s1,A	#load array A
 	la	s2,B	#load array B
 	la	s0,C	#load output array 
@@ -47,7 +48,6 @@ row_loop2:
 # t0:  m1[i][k], t1: m2[k][j], t2: result[i][j]
 #---------------------------------------------------------------------------------------
 m1_fet:             
-	mv      a2, a0       # moves the size
 	mv      a0, s3       # i to arg0
 	mv      a1, s5       # k to arg1
 	addi    sp, sp, -4   # saves ra to stack
@@ -61,7 +61,6 @@ m1_fet:
 m2_fet:             
 	addi    sp, sp, -4   # saves ra to stack
 	sw      ra, 0(sp)
-	mv      a2, a0       # moves the size
 	mv      a1, s4       # j to arg1
 	mv      a0, s5       # k to arg0
 	call    Matrix        # gets the Matrix
@@ -84,7 +83,6 @@ m1_m2_mult:
 result_fet:         
 	addi    sp, sp, -4   # saves ra to stack
 	sw      ra, 0(sp)
-	mv      a2, a0       # moves the size
 	mv      a0, s3       # i to arg0
 	mv      a1, s4       # j to arg1
 	call    Matrix        # gets the Matrix
@@ -103,7 +101,6 @@ result_store:
 col_loop:           
 	addi    sp, sp, -4   # saves ra to stack
 	sw      ra, 0(sp)
-	mv      a2, a0       # moves the size
 	mv      a0, s3       # i to arg0
 	mv      a1, s4       # j to arg1
 	call    Matrix        # gets the Matrix
@@ -118,17 +115,17 @@ row_loop1:
 
 row_loop2_admin:    
 	addi    s5, s5, 1    # k++
-	blt     s5, a0, row_loop2 # k < size
+	blt     s5, a2, row_loop2 # k < size
 	mv      s5, x0
 
 col_loop_admin:     
 	addi    s4, s4, 1    # j++
-	blt     s4, a0, col_loop # j < size
+	blt     s4, a2, col_loop # j < size
 	mv      s4, x0
 
 row_loop1_admin:    
 	addi    s3, s3, 1    # i++
-	blt     s3, a0, row_loop1 # i < size
+	blt     s3, a2, row_loop1 # i < size
 	mv      s3, x0
 
 restore:	
@@ -149,13 +146,14 @@ return:
 #-------------------------------------------------------------------------------------------
 Matrix:
 save2:		
-	addi	sp,sp,-4
+	addi	sp,sp,-8
 	sw	s0,0(sp)
+	sw	s1,4(sp)
 		
 init2:		
 	mv	s0,x0	
 	slli	a0,a0,2			#shift i values to word size
-	slli	a2,a2,2			#shift from byte-sized to wordsized array
+	slli	s1,a2,2			#shift from byte-sized to wordsized array
 		
 column:		
 	beqz	a1,row			#branch when number of remaining cols = 0
@@ -167,8 +165,8 @@ row:
 	add	a0,s0,a0		#add row to lut index
 				
 restore2:	
-	mv	a1,x0
-	mv	a2,x0
+	mv	a1,x0,
+	lw	s1,4(sp)
 	lw	s0,0(sp)
 	addi	sp,sp,4
 	ret
@@ -190,11 +188,11 @@ restore2:
 
 Multi:
 init3:	
-	addi	sp,	sp,	-12	#make space (stack 4)
+	addi	sp,	sp,	-8	#make space (stack 4)
+	sw	s0,	0(sp)		#save x on stack
+	sw	s1,	4(sp)		#save sum on stack
 	mv	s0,	x0		#intialize x (iterator)
 	mv	s1,	x0		#initialize sum
-	sw	s0,	4(sp)		#save x on stack
-	sw	s1,	0(sp)		#save sum on stack
 	beq	a1,	x0,	zer
 loop3:	
 	beq	s0,	a0,	done3	#if x>a0: start return sequence
@@ -206,13 +204,17 @@ loop3:
 done3:
 	mv	a1,	x0		#reset a1	
 	mv	a0,	s1		#overwrite a0 to be the new sum
-	lw	s1,	0(sp)		#restore s1
-	lw	s0,	4(sp)		#restore s0
+	lw	s1,	4(sp)		#restore s1
+	lw	s0,	0(sp)		#restore s0
 	addi 	sp,	sp,	8	#restore stack pointer
 	ret				#finish
 
-zer:	mv	a0,	x0
-	ret
+zer:	mv	a0,	x0		#output zero
+	mv	a1,	x0		#reset a1	
+	lw	s1,	4(sp)		#restore s1
+	lw	s0,	0(sp)		#restore s0
+	addi 	sp,	sp,	8	#restore stack pointer
+	ret				#finish
 	
 	
 	

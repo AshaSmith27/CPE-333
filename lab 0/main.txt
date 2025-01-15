@@ -206,25 +206,25 @@ Multi:
 init3:	
 	addi	sp,	sp,	-12	#make space (stack 4)
 	sw	ra,	8(sp)		#save ra (return address)
-	mv	s0,	x0			#intialize x (iterator)
-	mv	s1,	x0			#initialize sum
+	mv	s0,	x0		#intialize x (iterator)
+	mv	s1,	x0		#initialize sum
 	sw	s0,	4(sp)		#save x on stack
 	sw	s1,	0(sp)		#save sum on stack
 
 loop3:	
 	bgt	s0,	a0, done3	#if x>a0: start return sequence
-	add	s1,	s1,	a1		#add sum=sum+a1
+	add	s1,	s1,	a1	#add sum=sum+a1
 	sw	s1,	0(sp)		#store new sum
 	addi	s0,	s0,	1	#increment x++
 	j	loop3			#repeat!
 
 done3:
-	mv	a1,x0
-	mv	a2,x0	
-	lw	a0,	0(sp)		#return sum to a0
+	mv	a1,	x0		#reset a1	
+	mv	a0,	s1		#overwrite a0 to be the new sum
 	lw	ra,	8(sp)		#restore return address	
 	addi 	sp,	sp,	12	#restore stack pointer
-	ret					#finish
+	ret				#finish
+	
 	
 	
 	

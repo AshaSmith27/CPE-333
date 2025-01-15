@@ -7,9 +7,9 @@ C:      .word
 
 .text
 main:
-	mv	a0,t2
+	li	a0,3
 	call 	matrixMult
-	la	t0,C
+	
 size:				
 	mv	a0,t2
 	mv	a1,t2
@@ -23,7 +23,7 @@ loop1:
 	blt	t0,a0,loop1
 					
 done1:
-	nop
+	la	t6,C
 	j done1
 					
 
@@ -77,10 +77,11 @@ m2_fet:
 	mv      a1, s4       # j to arg1
 	mv      a0, s5       # k to arg0
 	call    Matrix        # gets the Matrix
-	add     a0, a0, s2   # adds index to appropriate LUT
-	lw      t1, 0(a0)    # retrieves value at matrix B index
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
+	add     a0, a0, s2   # adds index to appropriate LUT
+	lw      t1, 0(a0)    # retrieves value at matrix B index
+	
 
 m1_m2_mult:         
 	addi    sp, sp, -4   # saves ra to stack
@@ -90,6 +91,7 @@ m1_m2_mult:
 	call    Multi        # multiplies m1 * m2
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
+	mv	t0,a0		#t0 store sum
 
 result_fet:         
 	addi    sp, sp, -4   # saves ra to stack
@@ -98,7 +100,7 @@ result_fet:
 	mv      a0, s3       # i to arg0
 	mv      a1, s4       # j to arg1
 	call    Matrix        # gets the Matrix
-	add     a0, a0, s1   # adds index to appropriate LUT
+	add     a0, a0, s0   # adds index to appropriate LUT
 	lw      t1, 0(a0)    # retrieves value at matrix index
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
@@ -173,7 +175,7 @@ init2:
 		
 column:		
 	beqz	a1,row			#branch when number of remaining cols = 0
-	add	s0,s0,a2		#shift columns
+	add	s0,s0,a2			#shift columns
 	addi	a1,a1,-1		#increment loop
 	j column
 		

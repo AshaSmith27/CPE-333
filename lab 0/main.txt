@@ -212,7 +212,7 @@ init3:
 	sw	s1,	0(sp)		#save sum on stack
 
 loop3:	
-	bgt	s0,	a0, done3	#if x>a0: start return sequence
+	beq	s0,	a0,	done3	#if x>a0: start return sequence
 	add	s1,	s1,	a1	#add sum=sum+a1
 	sw	s1,	0(sp)		#store new sum
 	addi	s0,	s0,	1	#increment x++

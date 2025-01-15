@@ -148,10 +148,6 @@ return:
 # Assumes a0 = i (rows), a1 = j (columns), a2 = size of array, return index in a0
 #-------------------------------------------------------------------------------------------
 Matrix:
-init:	li	a0,0
-	li	a1,2
-	li	a2,4
-	
 save2:		
 	addi	sp,sp,-4
 	sw	s0,0(sp)
@@ -175,7 +171,7 @@ restore2:
 	mv	a2,x0
 	lw	s0,0(sp)
 	addi	sp,sp,4
-	
+	ret
 
 #-------------------------------------------------------------------------------------
 
@@ -195,7 +191,6 @@ restore2:
 Multi:
 init3:	
 	addi	sp,	sp,	-12	#make space (stack 4)
-	sw	ra,	8(sp)		#save ra (return address)
 	mv	s0,	x0		#intialize x (iterator)
 	mv	s1,	x0		#initialize sum
 	sw	s0,	4(sp)		#save x on stack
@@ -211,8 +206,9 @@ loop3:
 done3:
 	mv	a1,	x0		#reset a1	
 	mv	a0,	s1		#overwrite a0 to be the new sum
-	lw	ra,	8(sp)		#restore return address	
-	addi 	sp,	sp,	12	#restore stack pointer
+	lw	s1,	0(sp)		#restore s1
+	lw	s0,	4(sp)		#restore s0
+	addi 	sp,	sp,	8	#restore stack pointer
 	ret				#finish
 
 zer:	mv	a0,	x0

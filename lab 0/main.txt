@@ -14,7 +14,7 @@ main:
 	call 	matrixMult
 	
 	lw      ra, 0(sp)
-	addi    sp, sp, 44   # load ra from stack
+	addi    sp, sp, 4   # load ra from stack
 	
 	j done1
 					
@@ -35,21 +35,21 @@ init:
 	sw	s4,16(sp)
 	sw	s5,20(sp)
 					
-init1:		
+init6:		
 	mv      a2, a0       # moves the size			
 	la	s1,A	#load array A
 	la	s2,B	#load array B
-	la	s0,C	#load output array 
+	la	s6,C	#load output array 
 	mv	s3,x0	# i
 	mv	s4,x0	# j
 	mv	s5,x0	# k
 	       
-row_loop2:
+loop2hell:
 # Algo goes here
 # result[i][j] += m1[i][k] * m2[k][j]
 # Fetch m1[i][k] and m2[k][j]
 # Fetch result[i][j] into, mult m1 and m2, add to result and then store
-# t0:  m1[i][k], t1: m2[k][j], t2: result[i][j]
+# t0:  m1[i][k], t6: m2[k][j], t2: result[i][j]
 #---------------------------------------------------------------------------------------
 m1_fet:             
 	mv      a0, s3       # i to arg0
@@ -71,14 +71,14 @@ m2_fet:
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
 	add     a0, a0, s2   # adds index to appropriate LUT
-	lw      t1, 0(a0)    # retrieves value at matrix B index
+	lw      t6, 0(a0)    # retrieves value at matrix B index
 	
 
 m1_m2_mult:         
 	addi    sp, sp, -4   # saves ra to stack
 	sw      ra, 0(sp)
 	mv      a0, t0       # move m1 into a0
-	mv      a1, t1       # move m2 into a1
+	mv      a1, t6       # move m2 into a1
 	call    Multi        # multiplies m1 * m2
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
@@ -90,46 +90,43 @@ result_fet:
 	mv      a0, s3       # i to arg0
 	mv      a1, s4       # j to arg1
 	call    Matrix        # gets the Matrix
-	add     a0, a0, s0   # adds index to appropriate LUT
-	lw      t1, 0(a0)    # retrieves value at matrix index
+	add     a0, a0, s6   # adds index to appropriate LUT
+	lw      t6, 0(a0)    # retrieves value at matrix index
 	lw      ra, 0(sp)    # restores ra
 	addi    sp, sp, 4
 
 result_add:         
-	add     t0, t0, t1   # puts sum into t0
+	add     t0, t0, t6   # puts product into t0
 	
 
 result_store:       
-	sw      t0, 0(a0)    # stores t0 sum
-	addi	t4,t4,1	
-	j       row_loop2_admin
+	sw      t0, 0(a0)    # stores t0 sum	
+	j       loops_admin
 
-col_loop:           
-	j       col_loop_admin
-
-row_loop1:        
-	j       row_loop1_admin
-
-row_loop2_admin:    
-	bge     s5, a2, col_loop_admin # k < size
+loops_admin:
+	mv	a7,a2
+	addi	a7,a7,-1
+k_admin:    
 	addi    s5, s5, 1    # k++
 	addi	t4,t4,1	
-	j row_loop2
+	bgt     s5, a7, j_admin # k < size
+	j loop2hell
 	
 
-col_loop_admin:
+j_admin:
 	mv      s5, x0
-	bge     s4,a2,row_loop1_admin
-	addi    s4, s4, 1    # j++
 	addi	t5,t5,1
-	j row_loop2
+	addi    s4, s4, 1    # j++
+	bgt     s4,a7,i_admin
+	j loop2hell
 	
-row_loop1_admin:   
+i_admin:   
+	
 	mv      s4, x0 
-	bge	s3,a2,restore
-	addi	t6,t6,1 
+	#addi	t6,t6,1 
 	addi    s3, s3, 1    # i++
-	j row_loop2
+	bgt	s3,a7,restore
+	j loop2hell
 
 restore:	
 	mv	s3,x0
@@ -138,7 +135,7 @@ restore:
 	lw      s3, 12(sp)   # i
 	lw      s2, 8(sp)    # load output array
 	lw      s1, 4(sp)    # load array B
-	lw      s0, 0(sp)    # load array A
+	lw      s6, 0(sp)    # load array A
 	addi    sp, sp, 24
 
 return:		
@@ -168,7 +165,7 @@ row:
 	add	a0,s0,a0		#add row to lut index
 				
 restore2:	
-	mv	a1,x0,
+	mv	a1,x0
 	lw	s1,4(sp)
 	lw	s0,0(sp)
 	addi	sp,sp,8
@@ -196,7 +193,7 @@ init3:
 	sw	s1,	4(sp)		#save sum on stack
 	
 	mv	s0,	x0		#intialize x (iterator)
-	mv	s1,	x0		#initialize sum
+	mv	s1,	x0		#initialize sums
 	beq	a1,	x0,	zer
 loop3:	
 	beq	s0,	a0,	done3	#if x>a0: start return sequence

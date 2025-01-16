@@ -23,7 +23,6 @@ main:
 #----------------------------------------------------------------------------------------
 # Matrix multiplication function
 # a0 = array size
-# more testing
 #========================================================================================
 matrixMult:
 init:	
@@ -108,22 +107,18 @@ loops_admin:
 	addi	a7,a7,-1
 k_admin:    
 	addi    s5, s5, 1    # k++
-	addi	t4,t4,1	
 	bgt     s5, a7, j_admin # k < size
 	j loop2hell
 	
 
 j_admin:
 	mv      s5, x0
-	addi	t5,t5,1
 	addi    s4, s4, 1    # j++
 	bgt     s4,a7,i_admin
 	j loop2hell
 	
 i_admin:   
-	
 	mv      s4, x0 
-	#addi	t6,t6,1 
 	addi    s3, s3, 1    # i++
 	bgt	s3,a7,restore
 	j loop2hell
@@ -173,7 +168,6 @@ restore2:
 
 
 #-------------------------------------------------------------------------------------
-
 #Subroutine 2
 #Func Multi <a0,a1>
 #Return result in a0 

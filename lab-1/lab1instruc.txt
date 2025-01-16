@@ -1,0 +1,49 @@
+In this lab, you will design a set of benchmarks and measure their performance on the OTTER (our 233 processor). The set of bench- marks (e.g. matrix multiplication and addition) are representative of many important applications that are used in systems today. This lab will give you more practice with assembly programming, the RISCV ISA, and the basic multi-cycle processor design. After implementing and testing your benchmarks, for the second part of the lab you will measure the performance of the multi-cycle processor with a 1-cycle latency memory . Learning Objectives:
+
+Understand basics of an instruction set architecture
+
+Understand a basic multicycle processor microarchitecture
+
+Abstraction levels, including register-transfer-level modeling
+
+Design principles including modularity, hierarchy, and encapsu- lation
+
+Design patterns including control/datapath split
+
+TODO:
+
+PART 1: Compile/Assemble using RARS (you must use the RARS version provided on this course main page contains the memory specific for the OTTER) the Matrix Mult Program you created on lab0.
+
+Note: you need to create the RISC_V machine code file, mem.txt‘ file which is the memory image for use in the simulator.
+
+Load this file into the memory file in your Vivado ->Project ->RISCMultiCycle and simulate the execution of this MM program on your Otter CPU. 
+
+Create the waveform for the MM and copy paste part of the waveform showing that is working (you can annotate the image )
+
+Provide the CPU time 
+
+PART 2:  Setup the baseline OTTER (multi-cycle) and verify the processor with the testall.s program on Canvas. You can use your OTTER design from 233 or the reference design posted on Canvas (OT T ER − multicyle − 1 − cycle − memory.zip).
+
+Measure the performance of the testall program (e.g. to cycle through all instruction test cases, the total number of cycles ).
+
+Measure the performance of your benchmarks from part 1 on the OTTER, for matrices of size (3x3, 10x10, and 50x50).
+
+Files you may find helpful:
+
+Matrix Initialized to random integer numbers datasets.zipDownload datasets.zip
+Matrix Multiplication code in C to compile with the RISCV toolchain matmul.tgzDownload matmul.tgz
+Test all programs for Otter testing on Board test_all.zipDownload test_all.zip
+Staring Verilog template file simTemplate-1.vDownload simTemplate-1.v
+Otter Architectural Diagram Otter_arch_v1.7.pdf
+TA Otter Implementation (in case you prefer not to use your own implementation here is one by our TA and another one by Dr Joseph Callenes): OTTER_Diego_Curiel.zip Download OTTER_Diego_Curiel.zip, OTTER-multicyle-1-cycle-memory.zipDownload OTTER-multicyle-1-cycle-memory.zip
+ 
+
+UPLOAD:
+
+pdf document with names of students on the group and what each of the members did for the project
+
+screen shots of the waveforms for the simulations (MatMult and test_all) 
+
+execution time for the mat mult and the testall
+
+ 

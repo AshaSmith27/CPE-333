@@ -50,7 +50,7 @@ module simTemplate;
     end
 
     // Define Multi address
-    assign multi_addr = 32'h40; // Example address for Multi
+    assign multi_addr = 32'h010C; // Example address for Multi
 
     // Monitor Program Counter for Multi subroutine
     always @(pc) begin

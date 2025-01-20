@@ -1,0 +1,2 @@
+clock rate: 50Mhz
+clock cycles/clock rate = cpu 

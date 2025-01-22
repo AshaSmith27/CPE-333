@@ -1,0 +1,132 @@
+Address     Code        Basic                        Line Source
+
+0x00400000  0x00300513  addi x10,x0,3                11   	li	a0,3
+0x00400004  0xffc10113  addi x2,x2,0xfffffffc        12   	addi    sp, sp, -4   # saves ra to stack
+0x00400008  0x00112023  sw x1,0(x2)                  13   	sw      ra, 0(sp)
+0x0040000c  0x00000317  auipc x6,0                   15   	call 	matrixMult
+0x00400010  0x014300e7  jalr x1,x6,20                     
+0x00400014  0x00012083  lw x1,0(x2)                  17   	lw      ra, 0(sp)
+0x00400018  0x00410113  addi x2,x2,4                 18   	addi    sp, sp, 4   # load ra from stack
+0x0040001c  0x1e80006f  jal x0,0x000001e8            20   	j done1
+0x00400020  0xfe810113  addi x2,x2,0xffffffe8        31   	addi	sp,sp,-24
+0x00400024  0x00812023  sw x8,0(x2)                  32   	sw	s0,0(sp)
+0x00400028  0x00912223  sw x9,4(x2)                  33   	sw	s1,4(sp)
+0x0040002c  0x01212423  sw x18,8(x2)                 34   	sw	s2,8(sp)
+0x00400030  0x01312623  sw x19,12(x2)                35   	sw	s3,12(sp)
+0x00400034  0x01412823  sw x20,16(x2)                36   	sw	s4,16(sp)
+0x00400038  0x01512a23  sw x21,20(x2)                37   	sw	s5,20(sp)
+0x0040003c  0x00a00633  add x12,x0,x10               40   	mv      a2, a0       # moves the size			
+0x00400040  0x0fc10497  auipc x9,0x0000fc10          41   	la	s1,A	#load array A
+0x00400044  0xfc048493  addi x9,x9,0xffffffc0             
+0x00400048  0x0fc10917  auipc x18,0x0000fc10         42   	la	s2,B	#load array B
+0x0040004c  0xfdc90913  addi x18,x18,0xffffffdc           
+0x00400050  0x0fc10b17  auipc x22,0x0000fc10         43   	la	s6,C	#load output array 
+0x00400054  0xff8b0b13  addi x22,x22,0xfffffff8           
+0x00400058  0x000009b3  add x19,x0,x0                44   	mv	s3,x0	# i
+0x0040005c  0x00000a33  add x20,x0,x0                45   	mv	s4,x0	# j
+0x00400060  0x00000ab3  add x21,x0,x0                46   	mv	s5,x0	# k
+0x00400064  0x01300533  add x10,x0,x19               56   	mv      a0, s3       # i to arg0
+0x00400068  0x015005b3  add x11,x0,x21               57   	mv      a1, s5       # k to arg1
+0x0040006c  0xffc10113  addi x2,x2,0xfffffffc        58   	addi    sp, sp, -4   # saves ra to stack
+0x00400070  0x00112023  sw x1,0(x2)                  59   	sw      ra, 0(sp)
+0x00400074  0x00000317  auipc x6,0                   60   	call    Matrix        # gets the Matrix
+0x00400078  0x0f8300e7  jalr x1,x6,0x000000f8             
+0x0040007c  0x00012083  lw x1,0(x2)                  61   	lw      ra, 0(sp)    # restores ra
+0x00400080  0x00410113  addi x2,x2,4                 62   	addi    sp, sp, 4
+0x00400084  0x00950533  add x10,x10,x9               63   	add     a0, a0, s1   # adds index to appropriate LUT
+0x00400088  0x00052283  lw x5,0(x10)                 64   	lw      t0, 0(a0)    # retrieves value at matrix A index
+0x0040008c  0xffc10113  addi x2,x2,0xfffffffc        67   	addi    sp, sp, -4   # saves ra to stack
+0x00400090  0x00112023  sw x1,0(x2)                  68   	sw      ra, 0(sp)
+0x00400094  0x014005b3  add x11,x0,x20               69   	mv      a1, s4       # j to arg1
+0x00400098  0x01500533  add x10,x0,x21               70   	mv      a0, s5       # k to arg0
+0x0040009c  0x00000317  auipc x6,0                   71   	call    Matrix        # gets the Matrix
+0x004000a0  0x0d0300e7  jalr x1,x6,0x000000d0             
+0x004000a4  0x00012083  lw x1,0(x2)                  72   	lw      ra, 0(sp)    # restores ra
+0x004000a8  0x00410113  addi x2,x2,4                 73   	addi    sp, sp, 4
+0x004000ac  0x01250533  add x10,x10,x18              74   	add     a0, a0, s2   # adds index to appropriate LUT
+0x004000b0  0x00052f83  lw x31,0(x10)                75   	lw      t6, 0(a0)    # retrieves value at matrix B index
+0x004000b4  0xffc10113  addi x2,x2,0xfffffffc        79   	addi    sp, sp, -4   # saves ra to stack
+0x004000b8  0x00112023  sw x1,0(x2)                  80   	sw      ra, 0(sp)
+0x004000bc  0x00500533  add x10,x0,x5                81   	mv      a0, t0       # move m1 into a0
+0x004000c0  0x01f005b3  add x11,x0,x31               82   	mv      a1, t6       # move m2 into a1
+0x004000c4  0x00000317  auipc x6,0                   83   	call    Multi        # multiplies m1 * m2
+0x004000c8  0x0e8300e7  jalr x1,x6,0x000000e8             
+0x004000cc  0x00012083  lw x1,0(x2)                  84   	lw      ra, 0(sp)    # restores ra
+0x004000d0  0x00410113  addi x2,x2,4                 85   	addi    sp, sp, 4
+0x004000d4  0x00a002b3  add x5,x0,x10                86   	mv	t0,a0		#t0 store sum
+0x004000d8  0xffc10113  addi x2,x2,0xfffffffc        89   	addi    sp, sp, -4   # saves ra to stack
+0x004000dc  0x00112023  sw x1,0(x2)                  90   	sw      ra, 0(sp)
+0x004000e0  0x01300533  add x10,x0,x19               91   	mv      a0, s3       # i to arg0
+0x004000e4  0x014005b3  add x11,x0,x20               92   	mv      a1, s4       # j to arg1
+0x004000e8  0x00000317  auipc x6,0                   93   	call    Matrix        # gets the Matrix
+0x004000ec  0x084300e7  jalr x1,x6,0x00000084             
+0x004000f0  0x01650533  add x10,x10,x22              94   	add     a0, a0, s6   # adds index to appropriate LUT
+0x004000f4  0x00052f83  lw x31,0(x10)                95   	lw      t6, 0(a0)    # retrieves value at matrix index
+0x004000f8  0x00012083  lw x1,0(x2)                  96   	lw      ra, 0(sp)    # restores ra
+0x004000fc  0x00410113  addi x2,x2,4                 97   	addi    sp, sp, 4
+0x00400100  0x01f282b3  add x5,x5,x31                100  	add     t0, t0, t6   # puts product into t0
+0x00400104  0x00552023  sw x5,0(x10)                 104  	sw      t0, 0(a0)    # stores t0 sum	
+0x00400108  0x0040006f  jal x0,0x00000004            105  	j       loops_admin
+0x0040010c  0x00c008b3  add x17,x0,x12               108  	mv	a7,a2
+0x00400110  0xfff88893  addi x17,x17,0xffffffff      109  	addi	a7,a7,-1
+0x00400114  0x001a8a93  addi x21,x21,1               111  	addi    s5, s5, 1    # k++
+0x00400118  0x001e8e93  addi x29,x29,1               112  	addi	t4,t4,1	
+0x0040011c  0x0158c463  blt x17,x21,0x00000008       113  	bgt     s5, a7, j_admin # k < size
+0x00400120  0xf45ff06f  jal x0,0xffffff44            114  	j loop2hell
+0x00400124  0x00000ab3  add x21,x0,x0                118  	mv      s5, x0
+0x00400128  0x001f0f13  addi x30,x30,1               119  	addi	t5,t5,1
+0x0040012c  0x001a0a13  addi x20,x20,1               120  	addi    s4, s4, 1    # j++
+0x00400130  0x0148c463  blt x17,x20,0x00000008       121  	bgt     s4,a7,i_admin
+0x00400134  0xf31ff06f  jal x0,0xffffff30            122  	j loop2hell
+0x00400138  0x00000a33  add x20,x0,x0                126  	mv      s4, x0 
+0x0040013c  0x00198993  addi x19,x19,1               128  	addi    s3, s3, 1    # i++
+0x00400140  0x0138c463  blt x17,x19,0x00000008       129  	bgt	s3,a7,restore
+0x00400144  0xf21ff06f  jal x0,0xffffff20            130  	j loop2hell
+0x00400148  0x000009b3  add x19,x0,x0                133  	mv	s3,x0
+0x0040014c  0x01412a83  lw x21,20(x2)                134  	lw      s5, 20(sp)   # k
+0x00400150  0x01012a03  lw x20,16(x2)                135  	lw      s4, 16(sp)   # j
+0x00400154  0x00c12983  lw x19,12(x2)                136  	lw      s3, 12(sp)   # i
+0x00400158  0x00812903  lw x18,8(x2)                 137  	lw      s2, 8(sp)    # load output array
+0x0040015c  0x00412483  lw x9,4(x2)                  138  	lw      s1, 4(sp)    # load array B
+0x00400160  0x00012b03  lw x22,0(x2)                 139  	lw      s6, 0(sp)    # load array A
+0x00400164  0x01810113  addi x2,x2,24                140  	addi    sp, sp, 24
+0x00400168  0x00008067  jalr x0,x1,0                 143  	ret
+0x0040016c  0xff810113  addi x2,x2,0xfffffff8        151  	addi	sp,sp,-8
+0x00400170  0x00812023  sw x8,0(x2)                  152  	sw	s0,0(sp)
+0x00400174  0x00912223  sw x9,4(x2)                  153  	sw	s1,4(sp)
+0x00400178  0x00000433  add x8,x0,x0                 156  	mv	s0,x0	
+0x0040017c  0x00259593  slli x11,x11,2               157  	slli	a1,a1,2			#shift i values to word size
+0x00400180  0x00261493  slli x9,x12,2                158  	slli	s1,a2,2			#shift from byte-sized to wordsized array	
+0x00400184  0x00050863  beq x10,x0,0x00000010        160  	beqz	a0,row			#branch when number of remaining cols = 0
+0x00400188  0x00940433  add x8,x8,x9                 161  	add	s0,s0,s1			#shift columns
+0x0040018c  0xfff50513  addi x10,x10,0xffffffff      162  	addi	a0,a0,-1		#increment loop
+0x00400190  0xff5ff06f  jal x0,0xfffffff4            163  	j column
+0x00400194  0x00b40533  add x10,x8,x11               166  	add	a0,s0,a1		#add row to lut index
+0x00400198  0x000005b3  add x11,x0,x0                169  	mv	a1,x0
+0x0040019c  0x00412483  lw x9,4(x2)                  170  	lw	s1,4(sp)
+0x004001a0  0x00012403  lw x8,0(x2)                  171  	lw	s0,0(sp)
+0x004001a4  0x00810113  addi x2,x2,8                 172  	addi	sp,sp,8
+0x004001a8  0x00008067  jalr x0,x1,0                 173  	ret
+0x004001ac  0xff810113  addi x2,x2,0xfffffff8        193  	addi	sp,	sp,	-8	#make space (stack 4)
+0x004001b0  0x00812023  sw x8,0(x2)                  194  	sw	s0,	0(sp)		#save x on stack
+0x004001b4  0x00912223  sw x9,4(x2)                  195  	sw	s1,	4(sp)		#save sum on stack
+0x004001b8  0x00000433  add x8,x0,x0                 197  	mv	s0,	x0		#intialize x (iterator)
+0x004001bc  0x000004b3  add x9,x0,x0                 198  	mv	s1,	x0		#initialize sums
+0x004001c0  0x02058663  beq x11,x0,0x0000002c        199  	beq	a1,	x0,	zer
+0x004001c4  0x00a40863  beq x8,x10,0x00000010        201  	beq	s0,	a0,	done3	#if x>a0: start return sequence
+0x004001c8  0x00b484b3  add x9,x9,x11                202  	add	s1,	s1,	a1	#add sum=sum+a1
+0x004001cc  0x00140413  addi x8,x8,1                 203  	addi	s0,	s0,	1	#increment x++
+0x004001d0  0xff5ff06f  jal x0,0xfffffff4            204  	j	loop3			#repeat!
+0x004001d4  0x000005b3  add x11,x0,x0                207  	mv	a1,	x0		#reset a1	
+0x004001d8  0x00900533  add x10,x0,x9                208  	mv	a0,	s1		#overwrite a0 to be the new sum
+0x004001dc  0x00412483  lw x9,4(x2)                  209  	lw	s1,	4(sp)		#restore s1
+0x004001e0  0x00012403  lw x8,0(x2)                  210  	lw	s0,	0(sp)		#restore s0
+0x004001e4  0x00810113  addi x2,x2,8                 211  	addi 	sp,	sp,	8	#restore stack pointer
+0x004001e8  0x00008067  jalr x0,x1,0                 212  	ret				#finish
+0x004001ec  0x00000533  add x10,x0,x0                214  zer:	mv	a0,	x0		#output zero
+0x004001f0  0x000005b3  add x11,x0,x0                215  	mv	a1,	x0		#reset a1	
+0x004001f4  0x00412483  lw x9,4(x2)                  216  	lw	s1,	4(sp)		#restore s1
+0x004001f8  0x00012403  lw x8,0(x2)                  217  	lw	s0,	0(sp)		#restore s0
+0x004001fc  0x00810113  addi x2,x2,8                 218  	addi 	sp,	sp,	8	#restore stack pointer
+0x00400200  0x00008067  jalr x0,x1,0                 219  	ret				#finish
+0x00400204  0x0000006f  jal x0,0x00000000            222  	j done1

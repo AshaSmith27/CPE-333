@@ -219,4 +219,5 @@ zer:	mv	a0,	x0		#output zero
 	ret				#finish
 	
 done1:
+	j done1
 	

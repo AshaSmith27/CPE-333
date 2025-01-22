@@ -1,2 +1,6 @@
 clock rate: 50Mhz
-clock cycles/clock rate = cpu 
+clock cycles/clock rate = cpu
+
+clock cycles  = cycles per instruction * cycles per instruction
+
+final instruction of matrix. 0x1e80006f 

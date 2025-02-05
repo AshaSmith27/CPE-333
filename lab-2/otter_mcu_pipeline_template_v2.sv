@@ -161,7 +161,7 @@ module OTTER_MCU(input CLK,
      
     instr_t mem_wb_inst, ex_mem_inst;
      
-    OTTER_REG_MUX FourMux1 (.SEL(rf_wr_sel), .ZERO(pc_out_inc), .ONE(32'b0), .TWO(dout2), .THREE(IOBUS_ADDR),
+    OTTER_REG_MUX Mem_Mux (.SEL(rf_wr_sel), .ZERO(pc_out_inc), .ONE(32'b0), .TWO(dout2), .THREE(IOBUS_ADDR),
         .OUT(wd));
     
     OTTER_REG_FILE REG_FILE (.CLK(CLK), .EN(reg_wr), .ADR1(reg_adr1), .ADR2(reg_adr2), .WA(reg_wa), 

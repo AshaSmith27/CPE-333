@@ -79,12 +79,12 @@ module OTTER_MCU(input CLK,
      logic [31:0] if_de_pc;
      
      //Create RISC_V PC
-     OTTER_PC PC (.CLK(CLK), .RST(pc_rst), .PC_WRITE(pc_write), .PC_SOURCE(pc_source),
+     PC OTTER_PC (.CLK(CLK), .RST(pc_rst), .PC_WRITE(pc_write), .PC_SOURCE(pc_source),
         .JALR(jalr), .JAL(jal), .BRANCH(branch), .MTVEC(32'b0), .MEPC(32'b0),
         .PC_OUT(pc_out), .PC_OUT_INC(pc_out_inc));
         
      //Creates RISC-V MEM
-     OTTER_MEMORY Memory (.MEM_CLK(CLK), .MEM_RDEN1(mem_rden1), .MEM_RDEN2(mem_rden2), 
+     Memory OTTER_MEMORY (.MEM_CLK(CLK), .MEM_RDEN1(mem_rden1), .MEM_RDEN2(mem_rden2), 
         .MEM_WE2(mem_we2), .MEM_ADDR1(pc_out), .MEM_ADDR2(IOBUS_ADDR), .MEM_DIN2(IOBUS_OUT), .MEM_SIZE(size),
          .MEM_SIGN(sign), .IO_IN(IOBUS_IN), .IO_WR(IOBUS_WR), .MEM_DOUT1(ir), .MEM_DOUT2(dout2));   
     
@@ -103,19 +103,19 @@ module OTTER_MCU(input CLK,
 
     instr_t de_ex_inst, de_inst; //
     
-    OTTER_DCDR CU_DCDR (.IR_30(ir30), .IR_OPCODE(opcode), .IR_FUNCT(funct), .BR_EQ(br_eq), .BR_LT(br_lt),
+    CU_DCDR OTTER_DCDR (.IR_30(ir30), .IR_OPCODE(opcode), .IR_FUNCT(funct), .BR_EQ(br_eq), .BR_LT(br_lt),
      .BR_LTU(br_ltu), .ALU_FUN(alu_fun), .ALU_SRCA(alu_src_a), .ALU_SRCB(alu_src_b), .PC_SOURCE(pc_source),
       .RF_WR_SEL(rf_wr_sel));
       
-    ImmediateGenerator OTTER_IMGEN(.IR(imgen_ir), .U_TYPE(Utype), .I_TYPE(Itype), .S_TYPE(Stype),
+    ImmediateGenerator OTTER_IMGEN (.IR(imgen_ir), .U_TYPE(Utype), .I_TYPE(Itype), .S_TYPE(Stype),
         .B_TYPE(Btype), .J_TYPE(Jtype));
     
-    REG_FILE OTTER_REG_FILE(.CLK(CLK), .EN(reg_wr), .ADR1(reg_adr1), .ADR2(reg_adr2), .WA(reg_wa), 
+    REG_FILE OTTER_REG_FILE (.CLK(CLK), .EN(reg_wr), .ADR1(reg_adr1), .ADR2(reg_adr2), .WA(reg_wa), 
         .WD(wd), .RS1(rs1), .RS2(IOBUS_OUT));
     
-    OTTER_ALU_MUXA TwoMux (.ALU_SRC_A(alu_src_a), .RS1(rs1), .U_TYPE(Utype), .SRC_A(srcA));
+    TwoMux OTTER_ALU_MUXA (.ALU_SRC_A(alu_src_a), .RS1(rs1), .U_TYPE(Utype), .SRC_A(srcA));
     
-    OTTER_ALU_MUXB FourMux (.SEL(alu_src_b), .ZERO(IOBUS_OUT), .ONE(Itype), .TWO(Stype), .THREE(pc_out), .OUT(srcB));
+    FourMux OTTER_ALU_MUXB (.SEL(alu_src_b), .ZERO(IOBUS_OUT), .ONE(Itype), .TWO(Stype), .THREE(pc_out), .OUT(srcB));
     
     opcode_t OPCODE;
     assign OPCODE_t = opcode_t'(opcode);
@@ -146,11 +146,11 @@ module OTTER_MCU(input CLK,
      instr_t ex_mem_inst, de_ex_inst; //
      
     // Creates a RISC-V ALU
-    OTTER_ALU ALU (de_ex_inst.alu_fun, de_ex_opA, de_ex_opB, aluResult); // the ALU
+    ALU OTTER_ALU (de_ex_inst.alu_fun, de_ex_opA, de_ex_opB, aluResult); // the ALU
     
-    OTTER_BCG BCG (.RS1(rs1), .RS2(IOBUS_OUT), .BR_EQ(br_eq), .BR_LT(br_lt), .BR_LTU(br_ltu));
+    BCG OTTER_BCG (.RS1(rs1), .RS2(IOBUS_OUT), .BR_EQ(br_eq), .BR_LT(br_lt), .BR_LTU(br_ltu));
    
-    OTTER_BAG BAG (.RS1(rs1), .I_TYPE(Itype), .J_TYPE(Jtype), .B_TYPE(Btype), .FROM_PC(pc_out),
+    BAG OTTER_BAG (.RS1(rs1), .I_TYPE(Itype), .J_TYPE(Jtype), .B_TYPE(Btype), .FROM_PC(pc_out),
          .JAL(jal), .JALR(jalr), .BRANCH(branch));
          
      always_ff @(posedge CLK) begin //Pipeline register 
@@ -161,11 +161,8 @@ module OTTER_MCU(input CLK,
      
     instr_t mem_wb_inst, ex_mem_inst;
      
-    OTTER_REG_MUX Mem_Mux (.SEL(rf_wr_sel), .ZERO(pc_out_inc), .ONE(32'b0), .TWO(dout2), .THREE(IOBUS_ADDR),
+    FourMux OTTER_REG_MUX (.SEL(rf_wr_sel), .ZERO(pc_out_inc), .ONE(32'b0), .TWO(dout2), .THREE(IOBUS_ADDR),
         .OUT(wd));
-    
-    OTTER_REG_FILE REG_FILE (.CLK(CLK), .EN(reg_wr), .ADR1(reg_adr1), .ADR2(reg_adr2), .WA(reg_wa), 
-        .WD(wd), .RS1(rs1), .RS2(IOBUS_OUT));
         
     assign IOBUS_ADDR = ex_mem_aluRes;
     assign IOBUS_OUT = ex_mem_rs2;
